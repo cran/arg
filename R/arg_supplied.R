@@ -29,15 +29,17 @@
 arg_supplied <- function(x, .arg = rlang::caller_arg(x), .msg = NULL,
                          .call) {
   if (rlang::is_missing(x)) {
+
     if (is_not_null(.msg)) {
-      err(.msg, .call = .call)
+      err(.msg_eval(.msg), .call = .call)
     }
 
     arg_expr <- substitute(x)
 
     if (!rlang::is_symbol(arg_expr)) {
       err("{.arg x} must be an argument name",
-          .call = rlang::current_env())
+          .call = rlang::current_env()) |>
+        internal_arg()
     }
 
     err("an argument to {.arg {(.arg)}} must be supplied",

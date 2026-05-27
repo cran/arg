@@ -37,11 +37,14 @@ arg_between <- function(x, range = c(0, 1), inclusive = TRUE,
                         .arg = rlang::caller_arg(x), .msg = NULL,
                         .call) {
 
-  arg_length(range, 2L, .call = rlang::current_env())
-  arg_logical(inclusive, .call = rlang::current_env())
-  arg_length(inclusive, 1:2, .call = rlang::current_env())
+  arg_length(range, 2L, .call = rlang::current_env()) |>
+    internal_arg()
+  arg_logical(inclusive, .call = rlang::current_env()) |>
+    internal_arg()
+  arg_length(inclusive, 1:2, .call = rlang::current_env()) |>
+    internal_arg()
 
-  if (length(inclusive) == 1L) {
+  if (is_scalar(inclusive)) {
     inclusive <- inclusive[c(1L, 1L)]
   }
 
@@ -60,7 +63,7 @@ arg_between <- function(x, range = c(0, 1), inclusive = TRUE,
       !safe_all(.lt_comp(x, range[2L]))) {
 
     if (is_not_null(.msg)) {
-      err(.msg)
+      err(.msg_eval(.msg), .call = .call)
     }
 
     each_element_of <- if (length(x) > 1L) "each element of"
@@ -98,13 +101,14 @@ arg_between <- function(x, range = c(0, 1), inclusive = TRUE,
 arg_gt <- function(x, bound = 0,
                    .arg = rlang::caller_arg(x), .msg = NULL,
                    .call) {
-  arg_length(bound, 1L, .call = rlang::current_env())
+  arg_length(bound, 1L, .call = rlang::current_env()) |>
+    internal_arg()
 
   if (!are_comparable(x, bound, `>`) ||
       !safe_all(x > bound)) {
 
     if (is_not_null(.msg)) {
-      err(.msg, .call = .call)
+      err(.msg_eval(.msg), .call = .call)
     }
 
     each_element_of <- if (length(x) > 1L) "each element of"
@@ -124,21 +128,17 @@ arg_gt <- function(x, bound = 0,
 arg_gte <- function(x, bound = 0,
                     .arg = rlang::caller_arg(x), .msg = NULL,
                     .call) {
-  arg_length(bound, 1L, .call = rlang::current_env())
+  arg_length(bound, 1L, .call = rlang::current_env()) |>
+    internal_arg()
 
   if (!are_comparable(x, bound, `>=`) ||
       !safe_all(x >= bound)) {
 
     if (is_not_null(.msg)) {
-      err(.msg, .call = .call)
+      err(.msg_eval(.msg), .call = .call)
     }
 
     each_element_of <- if (length(x) > 1L) "each element of"
-
-    # if (bound == 0) {
-    #   err(.msg %or% "{each_element_of} {.arg {(.arg)}} must be non-negative",
-    #       .call = .call)
-    # }
 
     err("{each_element_of} {.arg {(.arg)}} must be greater than or equal to {.val {bound}}",
         .call = .call)
@@ -150,13 +150,14 @@ arg_gte <- function(x, bound = 0,
 arg_lt <- function(x, bound = 0,
                    .arg = rlang::caller_arg(x), .msg = NULL,
                    .call) {
-  arg_length(bound, 1L, .call = rlang::current_env())
+  arg_length(bound, 1L, .call = rlang::current_env()) |>
+    internal_arg()
 
   if (!are_comparable(x, bound, `<`) ||
       !safe_all(x < bound)) {
 
     if (is_not_null(.msg)) {
-      err(.msg, .call = .call)
+      err(.msg_eval(.msg), .call = .call)
     }
 
     each_element_of <- if (length(x) > 1L) "each element of"
@@ -176,13 +177,14 @@ arg_lt <- function(x, bound = 0,
 arg_lte <- function(x, bound = 0,
                     .arg = rlang::caller_arg(x), .msg = NULL,
                     .call) {
-  arg_length(bound, 1L, .call = rlang::current_env())
+  arg_length(bound, 1L, .call = rlang::current_env()) |>
+    internal_arg()
 
   if (!are_comparable(x, bound, `<=`) ||
       !safe_all(x <= bound)) {
 
     if (is_not_null(.msg)) {
-      err(.msg, .call = .call)
+      err(.msg_eval(.msg), .call = .call)
     }
 
     each_element_of <- if (length(x) > 1L) "each element of"
@@ -202,16 +204,12 @@ are_comparable <- function(x, y, comparison) {
     return(is.numeric(y))
   }
 
-  if (is.numeric(y)) {
-    return(is.numeric(x))
-  }
-
   if (is.character(x)) {
     return(is.character(y))
   }
 
-  if (is.character(y)) {
-    return(is.character(x))
+  if (is.numeric(y) || is.character(y)) {
+    return(FALSE)
   }
 
   tryCatch({

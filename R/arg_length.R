@@ -29,10 +29,16 @@
 arg_length <- function(x, len = 1L,
                        .arg = rlang::caller_arg(x), .msg = NULL,
                        .call) {
-  arg_counts(len, .call = rlang::current_env())
+  arg_counts(len, .call = rlang::current_env()) |>
+    internal_arg()
 
   if (!length(x) %in% len) {
-    err(.msg %or% "{.arg {(.arg)}} must have length {.or {len}}",
+
+    if (is_not_null(.msg)) {
+      err(.msg_eval(.msg), .call = .call)
+    }
+
+    err("{.arg {(.arg)}} must have length {.or {len}}",
         .call = .call)
   }
 }

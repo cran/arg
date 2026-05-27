@@ -50,22 +50,31 @@ arg_index <- function(x, data,
                       .arg = rlang::caller_arg(x),
                       .arg_data = rlang::caller_arg(data),
                       .msg = NULL, .call) {
-  arg_supplied(data, .call = rlang::current_env())
-  arg_data(data, .call = rlang::current_env())
+  arg_supplied(data, .call = rlang::current_env()) |>
+    internal_arg()
+  arg_data(data, .call = rlang::current_env()) |>
+    internal_arg()
 
-  if (is_null(colnames(data))) {
-    if (length(x) != 1L ||
-        (((!is.integer(x) && (!is.numeric(x) || !all(check_if_zero(x - trunc(x)))))
-          || any(x < 1) || any(x > ncol(data))))) {
-      err(.msg %or% "{.arg {(.arg)}} must be the index of a column in {.arg {(.arg_data)}}",
+  is_valid_num_index <- is_whole_numeric(x) && all(x >= 1L) && all(x <= ncol(data))
+
+  is_valid_char_index <- !is_valid_num_index &&
+    is_not_null(colnames(data)) &&
+    is.character(x) &&
+    all(x %in% colnames(data))
+
+  if (!is_scalar(x) ||
+      (!is_valid_num_index && !is_valid_char_index)) {
+
+    if (is_not_null(.msg)) {
+      err(.msg_eval(.msg), .call = .call)
+    }
+
+    if (is_null(colnames(data))) {
+      err("{.arg {(.arg)}} must be the index of a column in {.arg {(.arg_data)}}",
           .call = .call)
     }
-  }
-  else if (length(x) != 1L ||
-           (((!is.integer(x) && (!is.numeric(x) || !all(check_if_zero(x - trunc(x)))))
-             || any(x < 1) || any(x > ncol(data))) &&
-            (!is.character(x) || !all(x %in% colnames(data))))) {
-    err(.msg %or% "{.arg {(.arg)}} must be the name or index of a column in {.arg {(.arg_data)}}",
+
+    err("{.arg {(.arg)}} must be the name or index of a column in {.arg {(.arg_data)}}",
         .call = .call)
   }
 }
@@ -76,22 +85,30 @@ arg_indices <- function(x, data,
                         .arg = rlang::caller_arg(x),
                         .arg_data = rlang::caller_arg(data),
                         .msg = NULL, .call) {
-  arg_supplied(data, .call = rlang::current_env())
-  arg_data(data, .call = rlang::current_env())
+  arg_supplied(data, .call = rlang::current_env()) |>
+    internal_arg()
+  arg_data(data, .call = rlang::current_env()) |>
+    internal_arg()
 
-  if (is_null(colnames(data))) {
-    if (is_null(x) ||
-        (((!is.integer(x) && (!is.numeric(x) || !all(check_if_zero(x - trunc(x)))))
-          || any(x < 1) || any(x > ncol(data))))) {
-      err(.msg %or% "{.arg {(.arg)}} must be the {cli::qty(length(x))} ind{?ex/ices} of {?a/} column{?s} in {.arg {(.arg_data)}}",
+  is_valid_num_index <- is_whole_numeric(x) && all(x >= 1L) && all(x <= ncol(data))
+
+  is_valid_char_index <- !is_valid_num_index &&
+    is_not_null(colnames(data)) &&
+    is.character(x) &&
+    all(x %in% colnames(data))
+
+  if (!is_valid_num_index && !is_valid_char_index) {
+
+    if (is_not_null(.msg)) {
+      err(.msg_eval(.msg), .call = .call)
+    }
+
+    if (is_null(colnames(data))) {
+      err("{.arg {(.arg)}} must be the {cli::qty(length(x))} ind{?ex/ices} of {?a/} column{?s} in {.arg {(.arg_data)}}",
           .call = .call)
     }
-  }
-  else if (is_null(x) ||
-           (((!is.integer(x) && (!is.numeric(x) || !all(check_if_zero(x - trunc(x)))))
-             || any(x < 1) || any(x > ncol(data))) &&
-            (!is.character(x) || !all(x %in% colnames(data))))) {
-    err(.msg %or% "{.arg {(.arg)}} must be the {cli::qty(length(x))} name{?s} or ind{?ex/ices} of {?a/} column{?s} in {.arg {(.arg_data)}}",
+
+    err("{.arg {(.arg)}} must be the {cli::qty(length(x))} name{?s} or ind{?ex/ices} of {?a/} column{?s} in {.arg {(.arg_data)}}",
         .call = .call)
   }
 }

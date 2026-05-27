@@ -1,5 +1,7 @@
-is_null <- function(x) {length(x) == 0L}
+is_null <- function(x) {identical(length(x), 0L)}
 is_not_null <- function(x) {!is_null(x)}
+
+is_scalar <- function(x) {identical(length(x), 1L)}
 
 check_if_zero <- function(x, tolerance = sqrt(.Machine$double.eps)) {
   # this is the default tolerance used in all.equal
@@ -8,14 +10,20 @@ check_if_zero <- function(x, tolerance = sqrt(.Machine$double.eps)) {
 
 is_error <- function(x) {
   tryCatch(capture.output({out <- x}, type = "message"),
-                 error = function(e) {
-                   return(TRUE)
-                 }) |>
+           error = function(e) {
+             return(TRUE)
+           }) |>
     suppressWarnings() |>
     suppressMessages() |>
     invisible()
 
-    inherits(out, c("error", "try-error"))
+  inherits(out, c("error", "try-error"))
+}
+
+is_whole_numeric <- function(x) {
+  is_not_null(x) &&
+    (is.integer(x) ||
+       (is.numeric(x) && all(check_if_zero(x - trunc(x)))))
 }
 
 safe_any <- function(x) {
@@ -41,7 +49,7 @@ ansi_upper_first <- function(x) {
     for (i in which(starts_with_letters)) {
       if (cli::ansi_nchar(x[i]) > 1L) {
         x[i] <- paste0(cli::ansi_toupper(cli::ansi_substr(x[i], 1L, 1L)),
-                      cli::ansi_substr(x[i], 2L, cli::ansi_nchar(x[i])))
+                       cli::ansi_substr(x[i], 2L, cli::ansi_nchar(x[i])))
 
       }
       else {
@@ -81,10 +89,6 @@ trim_final_punct <- function(x) {
   x
 }
 
-`%or%` <- function(x, y) {
-  if (is_null(x)) y else x
-}
-
 any_apply <- function(X, FUN, ...) {
   FUN <- match.fun(FUN)
   if (!is.vector(X) || is.object(X)) {
@@ -112,4 +116,23 @@ all_apply <- function(X, FUN, ...) {
   }
 
   TRUE
+}
+
+# Makes an error an internal error, treated differently by
+# and_or(), etc.
+internal_arg <- function(expr) {
+  rlang::try_fetch(expr,
+                   error = function(e) {
+                     class(e) <- c("internal_arg_error", class(e))
+                     rlang::cnd_signal(e)
+                   })
+}
+
+.msg_eval <- function(.msg, .call = rlang::caller_env()) {
+  when_not_null(.msg,
+                arg_character,
+                .call = .call) |>
+    internal_arg()
+
+  .msg
 }

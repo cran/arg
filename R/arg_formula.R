@@ -34,19 +34,24 @@ arg_formula <- function(x, one_sided = NULL,
                         .arg = rlang::caller_arg(x),
                         .msg = NULL, .call) {
 
-  if (is_null(one_sided)) {
-    if (!rlang::is_formula(x)) {
-      err(.msg %or% "{.arg {(.arg)}} must be a formula",
-          .call = .call)
-    }
-  }
-  else {
-    arg_flag(one_sided, .call = rlang::current_env())
+  when_not_null(one_sided, arg_flag,
+                .call = rlang::current_env()) |>
+    internal_arg()
 
-    if (!rlang::is_formula(x, lhs = !one_sided)) {
-      sides <- if (one_sided) "one" else "two"
-      err(.msg %or% "{.arg {(.arg)}} must be a {sides}-sided formula",
+  if ((is_null(one_sided) && !rlang::is_formula(x)) ||
+      (is_not_null(one_sided) && !rlang::is_formula(x, lhs = !one_sided))) {
+
+    if (is_not_null(.msg)) {
+      err(.msg_eval(.msg), .call = .call)
+    }
+
+    if (is_null(one_sided)) {
+      err("{.arg {(.arg)}} must be a formula",
           .call = .call)
     }
+
+    sides <- if (one_sided) "one" else "two"
+    err("{.arg {(.arg)}} must be a {sides}-sided formula",
+        .call = .call)
   }
 }
