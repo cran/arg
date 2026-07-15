@@ -5,11 +5,11 @@
 #' @inheritParams arg_is
 #'
 #' @details
-#' Here, `NULL` refers to any length-0 object, including `NULL`, `logical(0L)`, `list()`, `3[FALSE]`, etc. `arg_non_null()` is useful for checking that a meaningful argument was supplied. `arg_null()` is primarily used for in [arg_or()] to denote that `NULL` is an allowed argument.
+#' Here, `NULL` refers to any length-0 object, including [`NULL`][`is.null`], `logical(0L)`, `list()`, `3[FALSE]`, etc. `arg_non_null()` is useful for checking that a meaningful argument was supplied. `arg_null()` is primarily used in [arg_or()] to denote that `NULL` is an allowed argument.
 #'
 #' @inherit arg_is return
 #'
-#' @seealso [arg_length()], [arg_no_NA()], [arg_supplied()]
+#' @seealso [arg_length()], [arg_no_NA()], [arg_supplied()], [when_not_null()]
 #'
 #' @examples
 #' f <- function(x = NULL, y = NULL) {
@@ -45,7 +45,7 @@ arg_non_null <- function(x, .arg = rlang::caller_arg(x), .msg = NULL,
   if (is_null(x)) {
 
     if (is_not_null(.msg)) {
-      err(.msg_eval(.msg), .call = .call)
+      err(.msg_eval(.msg), .call = .call, .envir = rlang::caller_env())
     }
 
     err("{.arg {(.arg)}} must be non-{.val {list(NULL)}}",
@@ -60,7 +60,7 @@ arg_null <- function(x, .arg = rlang::caller_arg(x), .msg = NULL,
   if (is_not_null(x)) {
 
     if (is_not_null(.msg)) {
-      err(.msg_eval(.msg), .call = .call)
+      err(.msg_eval(.msg), .call = .call, .envir = rlang::caller_env())
     }
 
     err("{.arg {(.arg)}} must be {.val {list(NULL)}}",

@@ -10,7 +10,7 @@ make_fail <- function(a0, x) {
 
   if (fn %in% c("arg_and", "arg_or")) {
     new_args <- lapply(args[["..."]], function(j) {
-      j <- .to_arg_fun_call(j)
+      j <- .to_arg_fun_call(j, rlang::as_label(args[["x"]]), args[[".arg"]])
 
       if ("x" %in% names(j)) {
         j <- rlang::call_modify(j, !!!list(x = args[["x"]]))
@@ -34,8 +34,12 @@ make_fail <- function(a0, x) {
 
   new_args <-  switch(
     fn,
-    arg_between = {
-      list(x = rep(NaN, 2L))
+    arg_between = , arg_gt = , arg_gte = , arg_lt = , arg_lte = {
+      is.na(x)[] <- TRUE
+      list(x = rep_len(x, 2L))
+    },
+    arg_colnamed =, arg_named = {
+      list(x = setNames(data.frame(1, 1), c("", NA_character_)))
     },
     arg_dots_not_supplied = {
       list("..." = list(1L))
@@ -57,20 +61,11 @@ make_fail <- function(a0, x) {
       if (isTRUE(all.equal(x, NaN))) list(x = 1L)
       else list(x = NaN)
     },
-    arg_gt = {
-      list(x = rep(NaN, 2L))
-    },
-    arg_gte = {
-      list(x = rep(NaN, 2L))
-    },
-    arg_index = {
-      list(x = rep.int(NaN, 2L))
-    },
-    arg_indices = {
+    arg_index = , arg_indices = {
       list(x = rep.int(NaN, 2L))
     },
     arg_is = {
-      list(x = structure(list(), class = paste(args[["class"]], collapse = "")))
+      list(x = structure(list(), class = paste(c("X", args[["class"]]), collapse = "")))
     },
     arg_is_not = {
       list(x = structure(list(), class = args[["class"]]))
@@ -80,12 +75,6 @@ make_fail <- function(a0, x) {
     },
     arg_list = {
       list(x = 1L)
-    },
-    arg_lt = {
-      list(x = rep(NaN, 2L))
-    },
-    arg_lte = {
-      list(x = rep(NaN, 2L))
     },
     arg_no_NA = {
       list(x = rep.int(NA, 2L))
@@ -99,7 +88,6 @@ make_fail <- function(a0, x) {
     arg_not_equal = {
       list(x = args[["x2"]])
     },
-    # arg_or,
     arg_supplied = {
       list(x = rlang::missing_arg())
     },
@@ -113,5 +101,5 @@ make_fail <- function(a0, x) {
 .evil_object <- list("5d1561a3444c04149260df7165afc077db2ab5a7",
                      844337346787.926008639,
                      NA, 1, 1) |>
-  setNames(c("e7bf8d80193c2fd16935c965c174db395b9824e4", NA, "hehe", "a", "b")) |>
+  setNames(c("e7bf8d80193c2fd16935c965c174db395b9824e4", NA, "hehe", "a", "")) |>
   structure(class = "arg_evil_object")

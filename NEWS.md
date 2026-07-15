@@ -1,6 +1,28 @@
 arg News and Updates
 ======
 
+# *arg* 0.2.0
+
+* Added `arg_color()` (and variants) to check whether an argument corresponds to a valid color specification.
+
+* Added `arg_name()` and `arg_names()` to check whether an argument is a vector of valid names of elements of an object.
+
+* Added `arg_ordered()` to check whether an argument is an ordered factor.
+
+* `arg_index()` and `arg_indices()` now check names for arbitrary objects, not just matrices and data frames.
+
+* `arg_counts()` and `arg_whole_numeric()` (and their scalar equivalents) now check whether a value is a whole number using `rlang::is_integerish()` instead of the criterion used by `all.equal()`.
+
+* Fixed a bug where the message provided to `.msg` (if any) was not evaluated in the correct environment.
+
+* Fixed several typos in the documentation and in some error messages.
+
+* Fixed bugs in processing some complicated nested messages produced by `arg_and()` and `arg_or()`.
+
+* Added a new logo.
+
+* Added a testing suite.
+
 # *arg* 0.1.1
 
 * `err()`, `wrn()`, and `msg()` now pass arguments specified in `...` to `rlang::abort()`, `rlang::warn()`, and `rlang::inform()`, respectively.

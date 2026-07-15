@@ -1,8 +1,6 @@
 #' Argument Verification
 #'
-#' An alternative to [match.arg()] with improved
-#' error messages via \pkg{cli}. Returns the first choice if `x` is `NULL`,
-#' and supports partial matching.
+#' An alternative to [match.arg()] with improved error messages via \pkg{cli}. Returns the first choice if `x` is `NULL`, and supports partial matching.
 #'
 #' @inheritParams arg_is
 #' @param x a string (or character vector if `several.ok = TRUE`) to match against `choices`. If `NULL`, the first element of `choices` is returned.
@@ -17,7 +15,7 @@
 #' @details
 #' Partial matching is supported via [pmatch()]. If no match is found, an error is thrown listing the valid `choices`.
 #'
-#' Checks are run on `x` prior to matching: first, [arg_supplied()] is used to check whether `x` was supplied; then [arg_string()] (if `several.ok = TRUE`) or [arg_character()] (if `several.ok = FALSE`) is used to check whether `x` is a valid string or character vector, respectively.
+#' Checks are run on `x` prior to matching: first, [arg_supplied()] is used to check whether `x` was supplied; then [arg_character()] (if `several.ok = TRUE`) or [arg_string()] (if `several.ok = FALSE`) is used to check whether `x` is a valid string or character vector, respectively.
 #'
 #' When `ignore.case = TRUE` (the default), an initial case-sensitive match is run, and if any values in `x` are unmatched, a second, case-insensitive match is run. When `ignore.case = FALSE`, only the first match is run. This ensures that exact matches (on both content and case) are prioritized before case-insensitive matches.
 #'
@@ -41,7 +39,8 @@
 #' # several.ok = TRUE
 #' g <- function(z = NULL) {
 #'   match_arg(z, c("None", "Exact", "Partial"),
-#'             several.ok = TRUE)
+#'             several.ok = TRUE,
+#'             ignore.case = FALSE)
 #' }
 #'
 #' try(g("exact"))               # Error: case not ignored
@@ -88,8 +87,8 @@ match_arg <- function(x, choices, several.ok = FALSE, ignore.case = TRUE,
   i <- pmatch(x, choices, nomatch = 0L,
               duplicates.ok = TRUE)
 
-  if (ignore.case && any(i == 0)) {
-    i[i == 0] <- pmatch(tolower(x[i == 0]), tolower(choices), nomatch = 0L,
+  if (ignore.case && any(i == 0L)) {
+    i[i == 0L] <- pmatch(tolower(x[i == 0L]), tolower(choices), nomatch = 0L,
                         duplicates.ok = TRUE)
   }
 

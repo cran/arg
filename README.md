@@ -1,12 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# *arg*: Clean and Simple Argument Checking
+# *arg*: Clean and Simple Argument Checking <img src="man/figures/logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 
 [![CRAN
-status](https://www.r-pkg.org/badges/version/arg)](https://CRAN.R-project.org/package=arg)
+status](https://www.r-pkg.org/badges/version/arg?color=fe423b)](https://CRAN.R-project.org/package=arg)
+[![CRAN_Downloads_Badge](https://cranlogs.r-pkg.org/badges/arg?color=fe423b)](https://cran.r-project.org/package=arg)
 <!-- badges: end -->
 
 ## Overview
@@ -70,8 +71,12 @@ represents the sound you would make if you were to encounter an error
 when running some code. Hopefully *arg* reduces the number of times
 users say “arg!”.
 
-<!-- If you use any of my R packages, including [*MatchIt*], [*WeightIt*], [*cobalt*], [*optweight*], or [*adrftools*], you may already be using *arg*!
--->
+If you use any of my R packages, including
+[*clarify*](https://iqss.github.io/clarify/),
+[*cobalt*](https://ngreifer.github.io/cobalt/),
+[*fwb*](https://ngreifer.github.io/fwb/), or
+[*WeightIt*](https://ngreifer.github.io/WeightIt/), you may already be
+using *arg*!
 
 ## Installation
 

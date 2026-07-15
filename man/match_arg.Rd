@@ -33,14 +33,12 @@ match_arg(
 A character string (or vector, if \code{several.ok = TRUE}) of the matched element(s) from \code{choices}. If there is no match, an error is thrown. When \code{several.ok = TRUE}, no error is thrown if there is at least one match.
 }
 \description{
-An alternative to \code{\link[=match.arg]{match.arg()}} with improved
-error messages via \pkg{cli}. Returns the first choice if \code{x} is \code{NULL},
-and supports partial matching.
+An alternative to \code{\link[=match.arg]{match.arg()}} with improved error messages via \pkg{cli}. Returns the first choice if \code{x} is \code{NULL}, and supports partial matching.
 }
 \details{
 Partial matching is supported via \code{\link[=pmatch]{pmatch()}}. If no match is found, an error is thrown listing the valid \code{choices}.
 
-Checks are run on \code{x} prior to matching: first, \code{\link[=arg_supplied]{arg_supplied()}} is used to check whether \code{x} was supplied; then \code{\link[=arg_string]{arg_string()}} (if \code{several.ok = TRUE}) or \code{\link[=arg_character]{arg_character()}} (if \code{several.ok = FALSE}) is used to check whether \code{x} is a valid string or character vector, respectively.
+Checks are run on \code{x} prior to matching: first, \code{\link[=arg_supplied]{arg_supplied()}} is used to check whether \code{x} was supplied; then \code{\link[=arg_character]{arg_character()}} (if \code{several.ok = TRUE}) or \code{\link[=arg_string]{arg_string()}} (if \code{several.ok = FALSE}) is used to check whether \code{x} is a valid string or character vector, respectively.
 
 When \code{ignore.case = TRUE} (the default), an initial case-sensitive match is run, and if any values in \code{x} are unmatched, a second, case-insensitive match is run. When \code{ignore.case = FALSE}, only the first match is run. This ensures that exact matches (on both content and case) are prioritized before case-insensitive matches.
 }
@@ -58,7 +56,8 @@ try(f(c("e", "p"))) # Error: several.ok = FALSE
 # several.ok = TRUE
 g <- function(z = NULL) {
   match_arg(z, c("None", "Exact", "Partial"),
-            several.ok = TRUE)
+            several.ok = TRUE,
+            ignore.case = FALSE)
 }
 
 try(g("exact"))               # Error: case not ignored

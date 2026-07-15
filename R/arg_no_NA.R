@@ -5,9 +5,9 @@
 #' @inheritParams arg_is
 #'
 #' @details
-#' `arg_no_NA()` throws an error when `anyNA(x)` is `0`. `arg_all_NA()` throws an error when `all(is.na(x))` is not `FALSE`. `arg_is_NA()` throws an error when `length(x)` is not 1 or `anyNA(x)` is `FALSE`.
+#' `arg_no_NA()` throws an error when `anyNA(x)` is `TRUE`. `arg_all_NA()` throws an error when `all(is.na(x))` is not `FALSE`. `arg_is_NA()` throws an error when `length(x)` is not 1 or `anyNA(x)` is `FALSE`.
 #'
-#' `arg_no_NA()` is useful for checking that a meaningful argument was supplied. `arg_all_NA()` and `arg_is_NA()` are primarily used for in [arg_or()] to denote that `NA` is an allowed argument.
+#' `arg_no_NA()` is useful for checking that a meaningful argument was supplied. `arg_all_NA()` and `arg_is_NA()` are primarily used in [arg_or()] to denote that `NA` is an allowed argument.
 #'
 #' @inherit arg_is return
 #'
@@ -36,7 +36,7 @@ arg_no_NA <- function(x, .arg = rlang::caller_arg(x), .msg = NULL,
                       .call) {
   if (anyNA(x)) {
     if (is_not_null(.msg)) {
-      err(.msg_eval(.msg), .call = .call)
+      err(.msg_eval(.msg), .call = .call, .envir = rlang::caller_env())
     }
 
     if (is_scalar(x)) {
@@ -56,7 +56,7 @@ arg_is_NA <- function(x, .arg = rlang::caller_arg(x), .msg = NULL,
   if (!is_scalar(x) || !is.atomic(x) || !anyNA(x)) {
 
     if (is_not_null(.msg)) {
-      err(.msg_eval(.msg), .call = .call)
+      err(.msg_eval(.msg), .call = .call, .envir = rlang::caller_env())
     }
 
     err("{.arg {(.arg)}} must be {.val {NA}}",
@@ -71,7 +71,7 @@ arg_all_NA <- function(x, .arg = rlang::caller_arg(x), .msg = NULL,
   if (!all(is.na(x))) {
 
     if (is_not_null(.msg)) {
-      err(.msg_eval(.msg), .call = .call)
+      err(.msg_eval(.msg), .call = .call, .envir = rlang::caller_env())
     }
 
     err("{.arg {(.arg)}} must only contain {.val {NA}} values",
