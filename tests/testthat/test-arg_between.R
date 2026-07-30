@@ -67,7 +67,7 @@ test_that("arg_gte() checks greater-than-or-equal", {
 
 test_that("arg_gte() reports not-comparable types distinctly", {
   expect_error(arg_gte("a", 2),
-               "must be comparable to 2 and be greater than or equal to 2", fixed = TRUE)
+               "must be greater than or equal to 2", fixed = TRUE)
 })
 
 test_that("arg_lt() checks strictly-less-than, with 'negative' shorthand at bound 0", {

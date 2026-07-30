@@ -1,7 +1,7 @@
-is_null <- function(x) {identical(length(x), 0L)}
+is_null <- function(x) {length(unclass(x)) == 0L}
 is_not_null <- function(x) {!is_null(x)}
 
-is_scalar <- function(x) {identical(length(x), 1L)}
+is_scalar <- function(x) {length(unclass(x)) == 1L}
 is_color <- function(x) {
   tryCatch(is.matrix(grDevices::col2rgb(x)),
            error = function(e) FALSE)

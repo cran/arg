@@ -1,6 +1,16 @@
 arg News and Updates
 ======
 
+# *arg* 0.2.1
+
+* `arg_or()` now runs much faster when some conditions fail and others pass.
+
+* Fixed bug in nested `arg_or()`/`arg_and()` introduced in previous version. Such errors render much more cleanly.
+
+* Nested errors are formatted more cleanly when used with `when_not_null()` and `when_supplied()`.
+
+* The multi-line errors produced by nested `arg_or()`/`arg_and()` now wrap at the console width, exactly as *cli* wraps a single-line error message, with continuation lines indented under the text they continue.
+
 # *arg* 0.2.0
 
 * Added `arg_color()` (and variants) to check whether an argument corresponds to a valid color specification.

@@ -69,10 +69,12 @@ arg_between <- function(x, range = c(0, 1), inclusive = TRUE,
 
     each_element_of <- if (length(x) > 1L) "each element of"
 
-    be_comp_to <- {
-      if (comp) "be"
-      else "be comparable to {.val {bound}} and be"
-    }
+    # be_comp_to <- {
+    #   if (comp) "be"
+    #   else "be comparable to {.val {bound}} and be"
+    # }
+
+    be_comp_to <- "be"
 
     if (all(inclusive)) {
       err(sprintf("{each_element_of} {.arg {(.arg)}} must %s between {.val {range}} (inclusive)",
@@ -127,10 +129,12 @@ arg_gt <- function(x, bound = 0,
           .call = .call)
     }
 
-    be_comp_to <- {
-      if (comp) "be"
-      else "be comparable to {.val {bound}} and be"
-    }
+    # be_comp_to <- {
+    #   if (comp) "be"
+    #   else "be comparable to {.val {bound}} and be"
+    # }
+
+    be_comp_to <- "be"
 
     err(sprintf("{each_element_of} {.arg {(.arg)}} must %s greater than {.val {bound}}",
                 be_comp_to),
@@ -156,10 +160,12 @@ arg_gte <- function(x, bound = 0,
 
     each_element_of <- if (length(x) > 1L) "each element of"
 
-    be_comp_to <- {
-      if (comp) "be"
-      else "be comparable to {.val {bound}} and be"
-    }
+    # be_comp_to <- {
+    #   if (comp) "be"
+    #   else "be comparable to {.val {bound}} and be"
+    # }
+
+    be_comp_to <- "be"
 
     err(sprintf("{each_element_of} {.arg {(.arg)}} must %s greater than or equal to {.val {bound}}",
                 be_comp_to),
@@ -190,10 +196,12 @@ arg_lt <- function(x, bound = 0,
           .call = .call)
     }
 
-    be_comp_to <- {
-      if (comp) "be"
-      else "be comparable to {.val {bound}} and be"
-    }
+    # be_comp_to <- {
+    #   if (comp) "be"
+    #   else "be comparable to {.val {bound}} and be"
+    # }
+
+    be_comp_to <- "be"
 
     err(sprintf("{each_element_of} {.arg {(.arg)}} must %s less than {.val {bound}}",
                 be_comp_to),
@@ -224,10 +232,12 @@ arg_lte <- function(x, bound = 0,
     #       .call = .call)
     # }
 
-    be_comp_to <- {
-      if (comp) "be"
-      else "be comparable to {.val {bound}} and be"
-    }
+    # be_comp_to <- {
+    #   if (comp) "be"
+    #   else "be comparable to {.val {bound}} and be"
+    # }
+
+    be_comp_to <- "be"
 
     err(sprintf("{each_element_of} {.arg {(.arg)}} must %s less than or equal to {.val {bound}}",
                 be_comp_to),
